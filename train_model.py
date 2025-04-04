@@ -19,20 +19,24 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 # Logistic Regression
 lr = LogisticRegression()
-lr.fit(X_train, y_train)
+lr.fit(X_train, y_train) # Learn patterns from training data
+y_pred_lr = lr.predict(X_test) # Make predictions based on testing data
 print(f"Logistic Regression Accuracy: {lr.score(X_test, y_test)}")
+print(f"Logistic Regression Classification Report:\n {classification_report(y_test, y_pred_lr)}")
+
 
 # Random Forest
 rf = RandomForestClassifier(n_estimators=100, random_state=42)
 rf.fit(X_train, y_train)
+y_pred_rf = rf.predict(X_test)
 print(f"Random Forest Accuracy: {rf.score(X_test, y_test)}")
+print(f"Random Forest Classification Report:\n {classification_report(y_test, y_pred_rf)}")
 
 # Save the models
 joblib.dump(lr, 'models/resume_classifier_lr.pkl')
 joblib.dump(tfidf, 'models/tfidf_vectorizer_lr.pkl')
-
-# Optionally, save Random Forest model as well
 joblib.dump(rf, 'models/resume_classifier_rf.pkl')
+joblib.dump(tfidf, 'models/tfidf_vectorizer_rf.pkl')
 
 # BERT (Advanced model)
 from transformers import BertTokenizer, BertForSequenceClassification, Trainer, TrainingArguments
