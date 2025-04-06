@@ -25,7 +25,9 @@ def extract_entities(text):
 def preprocess_data(resumes):
     """Preprocess and vectorize resumes using TF-IDF."""
     cleaned_resumes = [clean_text(resume) for resume in resumes]
-    # Extract features using TF-IDF vectorizer
+    
+    # Only vectorize cleaned text (not the entire matrix yet)
     tfidf = TfidfVectorizer(stop_words='english')
     X = tfidf.fit_transform(cleaned_resumes)
-    return X, tfidf
+    
+    return cleaned_resumes, tfidf  # Return cleaned text 

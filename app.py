@@ -1,7 +1,8 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import joblib
-import pandas as pd
-from preprocessing import preprocess_data
+from PyPDF2 import PdfReader  # library to extract text from PDF files
+import os
+from preprocessing import preprocess_data 
 
 app = Flask(__name__)
 
@@ -14,38 +15,48 @@ tfidf_rf = joblib.load('models/tfidf_vectorizer_rf.pkl')
 
 @app.route('/')
 def home():
-    return "Resume Classifier API is Running!"
+    return render_template('index.html')
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    data = request.json
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+    
+    file = request.files['file']
+    
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+    
+    if file and file.filename.endswith('.pdf'):
+        try:
+            # Step 1: Read PDF file
+            reader = PdfReader(file)
+            text = ""
+            for page in reader.pages:
+                text += page.extract_text()
 
-    # Check if 'resume' key exists in the request
-    if not data or 'resume' not in data:
-        return jsonify({'error': 'Missing "resume" in request'}), 400
+            # Step 2: Preprocess the extracted text using the preprocess_data function
+            cleaned_text, _ = preprocess_data([text])  # Only preprocess the text (no vectorization yet)
 
-    resume_text = data['resume']
+            # Step 3: Vectorize the cleaned text using the pre-trained vectorizers
+            resume_vector_lr = tfidf_lr.transform(cleaned_text)  # Vectorize for Logistic Regression
+            resume_vector_rf = tfidf_rf.transform(cleaned_text)  # Vectorize for Random Forest
 
-    try:
-        # Preprocess the input resume text
-        cleaned_resume = preprocess_data([resume_text])[0]
+            # Step 4: Make predictions using the models
+            prediction_lr = model_lr.predict(resume_vector_lr)
+            prediction_rf = model_rf.predict(resume_vector_rf)
 
-        # Vectorize the cleaned resume text using the pre-loaded TF-IDF vectorizers for both models
-        resume_vector_lr = tfidf_lr.transform(cleaned_resume)
-        resume_vector_rf = tfidf_rf.transform(cleaned_resume)
-
-        # Make predictions using the pre-trained models
-        prediction_lr = model_lr.predict(resume_vector_lr)
-        prediction_rf = model_rf.predict(resume_vector_rf)
-
-        # Return the predicted category for both models as a JSON response
-        return jsonify({
-            'Logistic Regression Category': prediction_lr[0],
-            'Random Forest Category': prediction_rf[0]
-        })
-
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+            # Step 5: Return the predicted category for both models
+            return jsonify({
+                'Logistic Regression Category': prediction_lr[0],
+                'Random Forest Category': prediction_rf[0]
+            })
+        
+        except Exception as e:
+            return jsonify({'error': f'Error processing PDF: {str(e)}'}), 500
+    
+    else:
+        return jsonify({'error': 'Invalid file format. Only PDF is supported.'}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)

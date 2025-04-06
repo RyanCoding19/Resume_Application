@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Classifier</title>
+</head>
+<body>
+    <h1>Resume Classifier</h1>
+    <p>Upload your resume (PDF) to get the classification</p>
+
+    <!-- File Upload Form -->
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="file" id="file" accept=".pdf" required>
+        <button type="submit">Upload and Classify</button>
+    </form>
+
+    <div id="result"></div>  <!-- To display prediction result -->
+
+    <script>
+        // Handle form submission
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();  // Prevent the form from submitting the normal way
+
+            const formData = new FormData();
+            formData.append("file", document.getElementById("file").files[0]);
+
+            fetch("/predict", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('result');
+
+                if (data.error) {
+                    resultDiv.innerHTML = `<p style="color:red">${data.error}</p>`;
+                } else {
+                    resultDiv.innerHTML = `
+                        <h3>Prediction Results:</h3>
+                        <p><strong>Logistic Regression Prediction:</strong> ${data['Logistic Regression Category']}</p>
+                        <p><strong>Random Forest Prediction:</strong> ${data['Random Forest Category']}</p>
+                    `;
+                }
+            })
+            .catch(error => {
+                document.getElementById('result').innerHTML = `<p style="color:red">Error: ${error.message}</p>`;
+            });
+        });
+    </script>
+</body>
+</html>
