@@ -4,12 +4,12 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import accuracy_score, classification_report
 from preprocessing import preprocess_data
+from sklearn.preprocessing import MaxAbsScaler
 import joblib
 import pandas as pd
 import os
 import mlflow
 import mlflow.sklearn
-from sklearn.preprocessing import MaxAbsScaler
 
 # Load data (for example from CSV)
 dataset = pd.read_csv("data/resume.csv")
