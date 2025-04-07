@@ -7,6 +7,8 @@ from preprocessing import preprocess_data
 import joblib
 import pandas as pd
 import os
+import mlflow
+import mlflow.sklearn
 from sklearn.preprocessing import MaxAbsScaler
 
 # Load data (for example from CSV)

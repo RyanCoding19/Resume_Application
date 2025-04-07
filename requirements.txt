@@ -1,2 +1,16 @@
-# pip install pandas scikit-learn nltk spacy transformers fastapi torch torchvision torchaudio PyPDF2
+# pip install pandas scikit-learn nltk spacy transformers fastapi torch torchvision torchaudio PyPDF2 gunicorn mlflow flask
 # python -m spacy download en_core_web_sm
+
+pandas
+scikit-learn
+nltk
+spacy
+transformers
+fastapi
+torch
+torchvision
+torchaudio
+PyPDF2
+gunicorn
+mlflow
+flask
