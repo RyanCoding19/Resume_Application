@@ -48,7 +48,7 @@ $ cd Resume_Selector/Resume_Application
 
 Install dependencies
 
-$ pip install -r requirements.txt
+$ pip install pandas scikit-learn nltk spacy transformers fastapi torch torchvision torchaudio PyPDF2
 
 $ python -m spacy download en_core_web_sm
 
