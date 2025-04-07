@@ -2,32 +2,47 @@ Resume Selector
 
 This project is a Flask-based web application that classifies resumes into different job categories using machine learning. Users can upload a PDF resume, and the app will predict the most suitable job category based on its content.
 
-📁 Project Structure
+
+Project Structure
 Resume_Selector/
 
 ├── Resume_Application/
+
 │   ├── app.py                  # Main Flask application
+
 │   ├── preprocessing.py        # Text cleaning and feature extraction
+
 │   ├── train_model.py          # Model training script
+
 │   ├── Templates/
+
 │   │   └── index.html          # Frontend template
+
 │   ├── models/                 # Pretrained models and TF-IDF vectorizers
+
 │   ├── data/
+
 │   │   └── Resume.csv          # Dataset for training
+
 │   └── requirements.txt        # Dependencies
 
-🚀 Features
+Features
+
 Resume text extraction from PDFs
+
 TF-IDF vectorization
+
 Classification using Logistic Regression and Random Forest
+
 Named Entity Recognition with spaCy
+
 Clean and modular code
 
-⚙️ Setup Instructions
+Setup Instructions
 
 Clone the repository
 
-$ git clone <repo-url>
+$ git clone https://github.com/RyanCoding19/Resume_Application
 
 $ cd Resume_Selector/Resume_Application
 
